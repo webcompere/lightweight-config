@@ -14,7 +14,6 @@ can be loaded into a Java object. It uses Jackson and YML.
 ### Installation
 
 ```xml
-<!-- when released... -->
 <dependency>
   <groupId>uk.org.webcompere</groupId>
   <artifactId>lightweight-config</artifactId>

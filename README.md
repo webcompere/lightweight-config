@@ -17,7 +17,7 @@ can be loaded into a Java object. It uses Jackson and YML.
 <dependency>
   <groupId>uk.org.webcompere</groupId>
   <artifactId>lightweight-config</artifactId>
-  <version>1.0.0</version>
+  <version>1.1.0</version>
 </dependency>
 ```
 

@@ -31,7 +31,10 @@ Configuration configuration =
     ConfigLoader.loadYmlConfigFromResource("config.yml", Configuration.class);
 ```
 
-This reads `config.yml` from the available resources.
+This reads `config.yml` from the available resources into an object of the `Configuration`
+class.
+
+**Other examples are available in [`ExamplesTest`](src/test/java/uk/org/webcompere/lightweightconfig/examples/ExamplesTest.java).**
 
 ### Yml Format
 Using the standard YML loader, a file like this:

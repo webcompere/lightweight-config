@@ -1,0 +1,7 @@
+configList:
+  - concurrency: ${CONCURRENCY1:-12}
+    url: ${URL1:-http://www.somewhere.com}
+    retry: true
+  - concurrency: ${CONCURRENCY2:-12}
+    url: ${URL2:-http://www.somewhere.com}
+    retry: false

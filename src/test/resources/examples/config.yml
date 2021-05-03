@@ -1,0 +1,3 @@
+concurrency: ${CONCURRENCY:-12}
+url: ${URL:-http://www.somewhere.com}
+retry: true

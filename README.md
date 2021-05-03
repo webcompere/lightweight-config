@@ -50,8 +50,7 @@ can be loaded into a java class:
 ```java
 // POJO class
 // It should have a default constructor and getters/setters
-// or use Jackson to decorate it for the loading of properties
-// from the YML
+// compatible with loading by SnakeYml
 class Config {
     private String name;
     private int age;
@@ -100,6 +99,20 @@ a blank value in an environment variable to supersede a non-blank in a system pr
 
 > Although the convention is `lowercase.system.property` and `UPPER_SNAKE_CASE_ENVIRONMENT_VARIABLE`
 > this is not enforced in any way by the library
+
+### Load to `Map`
+
+While a key benefit of this library is its ability to deserialize the configuration
+into a POJO, for very simple cases, it may be desirable to load into a `Map`. This
+may also cover cases where there's a variable number of properties that cannot be
+predicted at development time. E.g. where the configuration is fundamentally
+a dictionary.
+
+```java
+// Configuration loaded as a map
+Map<String, Object> configuration =
+    ConfigLoader.loadYmlConfigFromResource("config.yml");
+```
 
 ### Importing other Files
 

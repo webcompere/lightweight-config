@@ -7,19 +7,20 @@ import uk.org.webcompere.systemstubs.jupiter.SystemStubsExtension;
 import uk.org.webcompere.systemstubs.properties.SystemProperties;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static uk.org.webcompere.lightweightconfig.data.PlaceholderParser.applyPlaceholders;
 
 @ExtendWith(SystemStubsExtension.class)
 class PlaceholderParserTest {
 
     @Test
     void emptyLineGetsNoChange() {
-        assertThat(PlaceholderParser.applyPlaceholders(""))
+        assertThat(applyPlaceholders(""))
             .isEqualTo("");
     }
 
     @Test
     void lineWithNoPlaceholdersGetsNoChange() {
-        assertThat(PlaceholderParser.applyPlaceholders("foo"))
+        assertThat(applyPlaceholders("foo"))
             .isEqualTo("foo");
     }
 
@@ -27,7 +28,7 @@ class PlaceholderParserTest {
     void lineWithSystemPropertyGetsAssigned(SystemProperties properties) {
         properties.set("foo", "thevalue");
 
-        assertThat(PlaceholderParser.applyPlaceholders("This is ${foo}"))
+        assertThat(applyPlaceholders("This is ${foo}"))
             .isEqualTo("This is thevalue");
     }
 
@@ -35,7 +36,7 @@ class PlaceholderParserTest {
     void lineWithDottedSystemPropertyGetsAssigned(SystemProperties properties) {
         properties.set("foo.bar", "thevalue");
 
-        assertThat(PlaceholderParser.applyPlaceholders("This is ${foo.bar}"))
+        assertThat(applyPlaceholders("This is ${foo.bar}"))
             .isEqualTo("This is thevalue");
     }
 
@@ -43,7 +44,7 @@ class PlaceholderParserTest {
     void lineWithEnvironmentVariableGetsAssigned(EnvironmentVariables environmentVariables) {
         environmentVariables.set("FOO", "thevalue");
 
-        assertThat(PlaceholderParser.applyPlaceholders("This is ${FOO}"))
+        assertThat(applyPlaceholders("This is ${FOO}"))
             .isEqualTo("This is thevalue");
     }
 
@@ -51,25 +52,25 @@ class PlaceholderParserTest {
     void lineWithUnderscoredEnvironmentVariableGetsAssigned(EnvironmentVariables environmentVariables) {
         environmentVariables.set("FOO_FOO", "thevalue");
 
-        assertThat(PlaceholderParser.applyPlaceholders("This is ${FOO_FOO}"))
+        assertThat(applyPlaceholders("This is ${FOO_FOO}"))
             .isEqualTo("This is thevalue");
     }
 
     @Test
     void lineWithUnknownPlaceholderGetsABlank() {
-        assertThat(PlaceholderParser.applyPlaceholders("This is ${foo}!"))
+        assertThat(applyPlaceholders("This is ${foo}!"))
             .isEqualTo("This is !");
     }
 
     @Test
     void lineWithDefaultWherePlaceholderNotProvidedGetsDefault() {
-        assertThat(PlaceholderParser.applyPlaceholders("This is ${foo:-default}!"))
+        assertThat(applyPlaceholders("This is ${foo:-default}!"))
             .isEqualTo("This is default!");
     }
 
     @Test
     void canExpressDollarCurlyBraceInStringByUsingEmptyPlaceholder() {
-        assertThat(PlaceholderParser.applyPlaceholders("A placeholder is output: '${}{value}'"))
+        assertThat(applyPlaceholders("A placeholder is output: '${}{value}'"))
             .isEqualTo("A placeholder is output: '${value}'");
     }
 
@@ -79,7 +80,16 @@ class PlaceholderParserTest {
         environmentVariables.set("FOO", "env");
         properties.set("FOO", "system");
 
-        assertThat(PlaceholderParser.applyPlaceholders("This is ${FOO}"))
+        assertThat(applyPlaceholders("This is ${FOO}"))
             .isEqualTo("This is env");
+    }
+
+    @Test
+    void canResolveMulitiplePlaceholdersInSingleLine(SystemProperties properties) {
+        properties.set("foo", "123")
+            .set("bar", "345");
+
+        assertThat(applyPlaceholders("I have ${foo} foos and ${bar} bars"))
+            .isEqualTo("I have 123 foos and 345 bars");
     }
 }

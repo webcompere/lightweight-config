@@ -3,13 +3,16 @@ package uk.org.webcompere.lightweightconfig.examples;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import uk.org.webcompere.lightweightconfig.ConfigLoader;
+import uk.org.webcompere.lightweightconfig.provider.StringProvider;
 import uk.org.webcompere.systemstubs.environment.EnvironmentVariables;
 import uk.org.webcompere.systemstubs.jupiter.SystemStub;
 import uk.org.webcompere.systemstubs.jupiter.SystemStubsExtension;
+import uk.org.webcompere.systemstubs.properties.SystemProperties;
 
 import java.util.List;
 import java.util.Map;
 
+import static java.util.Collections.singletonMap;
 import static org.assertj.core.api.Assertions.assertThat;
 
 /**
@@ -131,5 +134,62 @@ class ExamplesTest {
         assertThat(map.get("concurrency")).isEqualTo(12);
         assertThat(map.get("url")).isEqualTo("http://www.somewhere.com");
         assertThat(map.get("retry")).isEqualTo(true);
+    }
+
+    @Test
+    void passwordPatternWithTagEveryTime() {
+        // simulated password manager object
+        Map<String, String> passwordManager = singletonMap("myPassword", "foo");
+
+        Map<String, Object> config = new ConfigLoader()
+            .withResourceProvider(StringProvider::fromString)
+            .withTag("password", passwordManager::get)
+            // the YML has a hardcoded tag and value for the tag to read every time
+            .load("password: !password myPassword");
+
+        assertThat(config).containsEntry("password", "foo");
+    }
+
+    @Test
+    void passwordPatternWithTagAndPlaceholderParameter(EnvironmentVariables environmentVariables) {
+        environmentVariables.set("PASSWORD", "myPassword");
+
+        // simulated password manager object
+        Map<String, String> passwordManager = singletonMap("myPassword", "foo");
+
+        Map<String, Object> config = new ConfigLoader()
+            .withResourceProvider(StringProvider::fromString)
+            .withTag("password", passwordManager::get)
+            // the YML has a hardcoded tag and the parameter for the tag is a placeholder
+            .load("password: !password ${PASSWORD}");
+
+        assertThat(config).containsEntry("password", "foo");
+    }
+
+    @Test
+    void passwordPatternWhereWholeExpressionIsPlaceholder(SystemProperties systemProperties) {
+
+        // simulated password manager object
+        Map<String, String> passwordManager = singletonMap("myPassword", "foo");
+
+        ConfigLoader configLoader = new ConfigLoader()
+            .withTag("password", passwordManager::get);
+
+        // the YML uses a placeholder for the password, which we're not supplying, so
+        // it will drop to the default
+        Map<String, Object> config1 = configLoader
+            .load("examples/dev-config.yml");
+
+        assertThat(config1).containsEntry("password", "password");
+
+        // but if we set the placeholder to an expression which includes a password tag, then
+        // it will resolve via the tag resolver
+
+        systemProperties.set("password", "!password myPassword");
+
+        Map<String, Object> config2 = configLoader
+            .load("examples/dev-config.yml");
+
+        assertThat(config2).containsEntry("password", "foo");
     }
 }

@@ -8,6 +8,9 @@ import java.util.regex.Pattern;
 
 import static uk.org.webcompere.lightweightconfig.regex.Regex.replaceTokens;
 
+/**
+ * Logic to resolve the placeholders in a single line of YAML
+ */
 public class PlaceholderParser {
     private static final Pattern PLACEHOLDER_PATTERN = Pattern.compile("(?x)\\$\\{\n" +
         "    (?<name>[0-9A-Za-z_.-]*)\n" +

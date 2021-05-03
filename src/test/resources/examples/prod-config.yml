@@ -1,3 +1,4 @@
 concurrency: 10
 url: http://www.prod.com
 retry: true
+password: ${password}

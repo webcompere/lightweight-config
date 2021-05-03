@@ -1,3 +1,4 @@
 concurrency: 1
 url: http://www.dev.com
 retry: false
+password: ${password:-password}

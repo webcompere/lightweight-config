@@ -145,6 +145,43 @@ a file such as `dev-Config.yml` or `prod-Config.yml`.
 Note: the parent file is loaded into the Java object, so it may also
 express some values to load into that object.
 
+## Customization
+
+An object of `ConfigLoader` allows customization to be added. Rather than using the `static`
+methods on `ConfigLoader` to load the configuration, create a `new ConfigLoader`,
+apply any customizations to it, and then use `loadAs` or `load` to load the
+configuration into a custom object or a `Map`.
+
+### Customize Resource Provider
+
+```java
+Config myConfig = new ConfigLoader()
+    .withResourceLoader(StringProvider::fromString)
+    .loadAs("concurrency: ${CONCURRENCY}", Config.class);
+```
+
+The custom `StringProvider` allows the input resource to be treated as a YML literal.
+
+> Note: when building a custom provider, it's necessary to include placeholder
+> parsing and import logic as part of the provider. This can be implemented
+> using either `PlaceholderParser` or `ImportAwarePlaceholderResolver`.
+
+### Custom Tags and Functions
+
+**Note: this is a good way to integrate with a password manager**
+
+```java
+Config myConfig = new ConfigLoader()
+    .withResourceLoader(StringProvider::fromString)
+    .withTag("password", myPasswordManager::load)
+    .loadAs("password: !password ${PASSWORD_ID}", Config.class);
+```
+
+When parsing `!password`, the `String` value to the right of it - here defined by a
+placeholder - will be passed to the `load` function of `myPasswordManager`.
+
+For other examples see [`ExamplesTest`](src/test/java/uk/org/webcompere/lightweightconfig/examples/ExamplesTest.java).
+
 ## Contributing
 
 If you have any issues or improvements, please

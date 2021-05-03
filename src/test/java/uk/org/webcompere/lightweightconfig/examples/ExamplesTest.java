@@ -8,6 +8,7 @@ import uk.org.webcompere.systemstubs.jupiter.SystemStub;
 import uk.org.webcompere.systemstubs.jupiter.SystemStubsExtension;
 
 import java.util.List;
+import java.util.Map;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -77,6 +78,10 @@ class ExamplesTest {
         public List<Config> getConfigList() {
             return configList;
         }
+
+        public void setConfigList(List<Config> configList) {
+            this.configList = configList;
+        }
     }
 
     @Test
@@ -118,5 +123,13 @@ class ExamplesTest {
         assertThat(config2.getConcurrency()).isEqualTo(10);
         assertThat(config2.getUrl()).isEqualTo("http://www.prod.com");
         assertThat(config2.isRetry()).isTrue();
+    }
+
+    @Test
+    void canLoadAsMap() {
+        Map<String, Object> map = ConfigLoader.loadYmlConfigFromResource("examples/config.yml");
+        assertThat(map.get("concurrency")).isEqualTo(12);
+        assertThat(map.get("url")).isEqualTo("http://www.somewhere.com");
+        assertThat(map.get("retry")).isEqualTo(true);
     }
 }

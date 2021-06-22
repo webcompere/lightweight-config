@@ -29,7 +29,7 @@ system properties.
 <dependency>
   <groupId>uk.org.webcompere</groupId>
   <artifactId>lightweight-config</artifactId>
-  <version>1.1.0</version>
+  <version>1.2.0</version>
 </dependency>
 ```
 
@@ -245,4 +245,13 @@ The basic coding style is described in the
 ```bash
 # to build
 ./mvnw clean install
+```
+
+### Release
+
+> Internal use
+
+```bash
+export GPG_TTY=$(tty)
+./mvnw clean -Dgpg.executable=gpg -Prelease-sign-artifacts -Dgpg.passphrase=secret release:prepare release:perform -f pom.xml
 ```

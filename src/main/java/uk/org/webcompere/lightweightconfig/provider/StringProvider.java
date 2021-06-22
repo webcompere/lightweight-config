@@ -12,7 +12,7 @@ import static uk.org.webcompere.lightweightconfig.provider.ResourceProvider.LINE
  */
 public class StringProvider {
     /**
-     * Apply the placeholder logic to a string to produce the final YML.
+     * Apply the placeholder logic to a string to produce the final config file.
      * Note: doesn't support <code>#import</code>
      * @param string the string to convert
      * @return a placeholder interpolated string

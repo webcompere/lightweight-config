@@ -246,3 +246,12 @@ The basic coding style is described in the
 # to build
 ./mvnw clean install
 ```
+
+### Release
+
+> Internal use
+
+```bash
+export GPG_TTY=$(tty)
+./mvnw clean -Dgpg.executable=gpg -Prelease-sign-artifacts -Dgpg.passphrase=secret release:prepare release:perform -f pom.xml
+```

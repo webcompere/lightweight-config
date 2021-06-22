@@ -9,8 +9,10 @@ import uk.org.webcompere.systemstubs.jupiter.SystemStub;
 import uk.org.webcompere.systemstubs.jupiter.SystemStubsExtension;
 import uk.org.webcompere.systemstubs.properties.SystemProperties;
 
+import java.nio.file.Paths;
 import java.util.List;
 import java.util.Map;
+import java.util.Properties;
 
 import static java.util.Collections.singletonMap;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -57,6 +59,14 @@ class ExamplesTest {
     @Test
     void loadConfigObjectWithDefaults() {
         Config config = ConfigLoader.loadYmlConfigFromResource("examples/config.yml", Config.class);
+        assertThat(config.getConcurrency()).isEqualTo(12);
+        assertThat(config.getUrl()).isEqualTo("http://www.somewhere.com");
+        assertThat(config.isRetry()).isTrue();
+    }
+
+    @Test
+    void loadConfigObjectWithDefaultsFromFile() {
+        Config config = ConfigLoader.loadYmlConfig(Paths.get("src", "test", "resources", "examples", "config.yml"), Config.class);
         assertThat(config.getConcurrency()).isEqualTo(12);
         assertThat(config.getUrl()).isEqualTo("http://www.somewhere.com");
         assertThat(config.isRetry()).isTrue();
@@ -137,6 +147,14 @@ class ExamplesTest {
     }
 
     @Test
+    void canLoadAsMapByFile() {
+        Map<String, Object> map = ConfigLoader.loadYmlConfig(Paths.get("src", "test", "resources", "examples", "config.yml"));
+        assertThat(map.get("concurrency")).isEqualTo(12);
+        assertThat(map.get("url")).isEqualTo("http://www.somewhere.com");
+        assertThat(map.get("retry")).isEqualTo(true);
+    }
+
+    @Test
     void passwordPatternWithTagEveryTime() {
         // simulated password manager object
         Map<String, String> passwordManager = singletonMap("myPassword", "foo");
@@ -191,5 +209,24 @@ class ExamplesTest {
             .load("examples/dev-config.yml");
 
         assertThat(config2).containsEntry("password", "foo");
+    }
+
+    @Test
+    void loadPropertiesFileWithPlaceholdersAndDefaults(EnvironmentVariables environmentVariables) {
+        environmentVariables.set("SCORE", "1-3");
+
+        Properties properties = ConfigLoader.loadPropertiesFromResource("examples/interpolation.properties");
+        assertThat(properties.get("score"))
+            .isEqualTo("1-3");
+    }
+
+    @Test
+    void loadPropertiesFileWithRelativePathImports() {
+        environmentVariables.set("SCORE", "1-3");
+
+        Properties properties = ConfigLoader.loadProperties(Paths.get("src", "test", "resources",
+            "subdir", "import.properties"));
+        assertThat(properties.get("status"))
+            .isEqualTo("brilliant");
     }
 }

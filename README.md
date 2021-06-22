@@ -6,8 +6,20 @@ A small library for enabling configuration parameters to be loaded in Java
 This library is intended for use in small applications for loading parameters
 that may be set as system properties or environment variables.
 
-It allows a YML file to be created that describes how these properties
-can be loaded into a Java object. It uses Jackson and YML.
+#### YML
+Create a YML file to describe the properties to load, and a Java object
+to represent them.
+
+Lightweight Config uses SnakeYML as its YML engine and loads the YML after first
+pre-processing it to import placeholders relating to environment variables or system
+properties.
+
+It also allows some custom logic to be added to handle custom _tags_ in the YML.
+
+#### Properties Files
+A thin wrapper around `Properties.load` this pre-processes properties files found in
+resources or file system, in order to interpolate environment variables or
+system properties.
 
 ## Usage
 
@@ -21,7 +33,7 @@ can be loaded into a Java object. It uses Jackson and YML.
 </dependency>
 ```
 
-### Basic Example
+### Basic Examples
 
 _Assuming a config file in resources of `config.yml` and a class
 that models that file called `Configuration`:_
@@ -33,6 +45,30 @@ Configuration configuration =
 
 This reads `config.yml` from the available resources into an object of the `Configuration`
 class.
+
+or
+
+```java
+Configuration configuration =
+    ConfigLoader.loadYmlConfig(filePath, Configuration.class);
+```
+
+Allows the `.yml` file to be on the file system somewhere.
+
+
+For `Properties` loading:
+
+```java
+Properties properties =
+    ConfigLoader.loadPropertiesFromResource("examples/interpolation.properties");
+```
+
+Properties files can also be loaded from file system via `Path`:
+
+```java
+Properties properties = ConfigLoader.loadProperties(Paths.get("src", "test", "resources",
+    "subdir", "import.properties"));
+```
 
 **Other examples are available in [`ExamplesTest`](src/test/java/uk/org/webcompere/lightweightconfig/examples/ExamplesTest.java).**
 
@@ -142,8 +178,17 @@ someVariableByPlaceholder: ${PLACEHOLDER_VALUE}
 Here, the contents of the property `runtime.profile` might load
 a file such as `dev-Config.yml` or `prod-Config.yml`.
 
-Note: the parent file is loaded into the Java object, so it may also
-express some values to load into that object.
+> Note: the parent file is loaded into the Java object, so it may also
+> express some values to load into that object.
+
+#### Import File Paths
+
+When `#import` is used within resources, the import path is the full
+resource path to the imported file.
+
+With file imports, the paths for `#import` are
+relative to the current file. E.g. `#import ../somefile.properties` or
+`#import neighbour.properties`.
 
 ## Customization
 

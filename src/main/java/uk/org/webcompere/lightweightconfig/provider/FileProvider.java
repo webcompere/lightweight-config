@@ -1,5 +1,6 @@
 package uk.org.webcompere.lightweightconfig.provider;
 
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import uk.org.webcompere.lightweightconfig.ConfigLoaderException;
 
 import java.io.IOException;
@@ -37,6 +38,7 @@ public class FileProvider {
             .collect(joining(LINE_DELIMITER));
     }
 
+    @SuppressFBWarnings(value = "DCN_NULLPOINTER_EXCEPTION", justification = "Converting known exception")
     private Stream<String> readAndProcessFile() {
         try (Stream<String> stream = Files.lines(currentFile)) {
             // need to collect to a list and then re-stream before returning

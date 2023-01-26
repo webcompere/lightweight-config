@@ -1,5 +1,6 @@
 package uk.org.webcompere.lightweightconfig.provider;
 
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import uk.org.webcompere.lightweightconfig.ConfigLoaderException;
 
 import java.io.BufferedReader;
@@ -30,6 +31,7 @@ public class ResourceProvider {
             .collect(joining(LINE_DELIMITER));
     }
 
+    @SuppressFBWarnings(value = "DCN_NULLPOINTER_EXCEPTION", justification = "Converting known exception")
     private static Stream<String> readAndProcessResourceLines(String resourcePath) {
         try (InputStream stream = Thread.currentThread()
             .getContextClassLoader()

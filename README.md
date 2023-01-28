@@ -1,7 +1,7 @@
 # Lightweight Configuration
 A small library for enabling configuration parameters to be loaded in Java
 
-[![Build status](https://ci.appveyor.com/api/projects/status/xi4kb7soojsx6rs3/branch/main?svg=true)](https://ci.appveyor.com/project/ashleyfrieze/lightweight-config/branch/main) [![codecov](https://codecov.io/gh/webcompere/lightweight-config/branch/main/graph/badge.svg?token=HE5JM9TLKL)](https://codecov.io/gh/webcompere/lightweight-config)
+[![Build status](https://ci.appveyor.com/api/projects/status/xi4kb7soojsx6rs3/branch/main?svg=true)](https://ci.appveyor.com/project/ashleyfrieze/lightweight-config/branch/main) [![codecov](https://codecov.io/gh/webcompere/lightweight-config/branch/main/graph/badge.svg?token=HE5JM9TLKL)](https://codecov.io/gh/webcompere/lightweight-config)  [![Maven Central](https://maven-badges.herokuapp.com/maven-central/uk.org.webcompere/lightweight-config/badge.svg)](https://maven-badges.herokuapp.com/maven-central/uk.org.webcompere/lightweight-config/)
 
 This library is intended for use in small applications for loading parameters
 that may be set as system properties or environment variables.

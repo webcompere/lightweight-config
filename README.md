@@ -14,6 +14,9 @@ Lightweight Config uses SnakeYML as its YML engine and loads the YML after first
 pre-processing it to import placeholders relating to environment variables or system
 properties.
 
+> NOTE: SnakeYml 2.0 is now the standard
+> If you need SnakeYml 1.33, then use LightweightConfig version 1.2.1
+
 It also allows some custom logic to be added to handle custom _tags_ in the YML.
 
 #### Properties Files
@@ -29,7 +32,7 @@ system properties.
 <dependency>
   <groupId>uk.org.webcompere</groupId>
   <artifactId>lightweight-config</artifactId>
-  <version>1.2.1</version>
+  <version>1.3.0</version>
 </dependency>
 ```
 
